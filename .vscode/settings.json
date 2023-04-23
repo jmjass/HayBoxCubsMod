@@ -1,0 +1,4 @@
+{
+    "cmake.configureOnOpen": true,
+    "cmake.sourceDirectory": "${workspaceFolder}/.pio/libdeps/pico/MIDI Library/src"
+}
