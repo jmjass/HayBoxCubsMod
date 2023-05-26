@@ -1,10 +1,10 @@
-#include "modes/Melee20Button.hpp"
+#include "modes/MeleeTopHomeRow.hpp"
 
 #define ANALOG_STICK_MIN 48
 #define ANALOG_STICK_NEUTRAL 128
 #define ANALOG_STICK_MAX 208
 
-Melee20Button::Melee20Button(socd::SocdType socd_type, Melee20ButtonOptions options)
+MeleeTopHomeRow::MeleeTopHomeRow(socd::SocdType socd_type, MeleeTopHomeRowOptions options)
     : ControllerMode(socd_type) {
     _socd_pair_count = 4;
     _socd_pairs = new socd::SocdPair[_socd_pair_count]{
@@ -18,23 +18,23 @@ Melee20Button::Melee20Button(socd::SocdType socd_type, Melee20ButtonOptions opti
     _horizontal_socd = false;
 }
 
-void Melee20Button::HandleSocd(InputState &inputs) {
+void MeleeTopHomeRow::HandleSocd(InputState &inputs) {
     _horizontal_socd = inputs.left && inputs.right;
     InputMode::HandleSocd(inputs);
 }
 
-void Melee20Button::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
+void MeleeTopHomeRow::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
     outputs.a = inputs.a;
-    outputs.b = inputs.b;
-    outputs.x = inputs.x;
-    outputs.y = inputs.y;
-    outputs.buttonR = inputs.z;
+    outputs.b = inputs.r;
+    outputs.x = inputs.y;
+    outputs.y = inputs.x;
+    outputs.buttonR = inputs.lightshield;
     if (inputs.nunchuk_connected) {
         outputs.triggerLDigital = inputs.nunchuk_z;
     } else {
         outputs.triggerLDigital = inputs.l;
     }
-    outputs.triggerRDigital = inputs.r;
+    outputs.triggerRDigital = inputs.b;
     outputs.start = inputs.start;
 
     // Activate D-Pad layer by holding Mod X + Mod Y or Nunchuk C button.
@@ -51,13 +51,13 @@ void Melee20Button::UpdateDigitalOutputs(InputState &inputs, OutputState &output
         outputs.dpadRight = true;
 }
 
-void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
+void MeleeTopHomeRow::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
     // Coordinate calculations to make modifier handling simpler.
     UpdateDirections(
         inputs.left,
         inputs.right,
         inputs.down,
-        inputs.up,
+        inputs.midshield,
         inputs.c_left,
         inputs.c_right,
         inputs.c_down,
@@ -68,7 +68,7 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
         outputs
     );
 
-    bool shield_button_pressed = inputs.l || inputs.r || inputs.lightshield || inputs.midshield;
+    bool shield_button_pressed = inputs.l || inputs.b || inputs.z || inputs.up;
     if (directions.diagonal) {
         // q1/2 = 7000 7000
         outputs.leftStickX = 128 + (directions.x * 56);
@@ -77,7 +77,7 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
         // degree wavedash). Also used as default q3/4 diagonal if crouch walk option select is
         // enabled.
         if (directions.y == -1 && (shield_button_pressed || _options.crouch_walk_os)) {
-            outputs.leftStickX = 128 + (directions.x * 57);
+            outputs.leftStickX = 128 + (directions.x * 56);
             outputs.leftStickY = 128 + (directions.y * 55);
         }
     }
@@ -136,7 +136,7 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
             }
 
             /* Extended Up B Angles */
-            if (inputs.b) {
+            if (inputs.r) {
                 // 22.9638 - 9125 3875 (23.0) = 73 31
                 outputs.leftStickX = 128 + (directions.x * 73);
                 outputs.leftStickY = 128 + (directions.y * 31);
@@ -190,7 +190,7 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
         }
 
         // Turnaround neutral B nerf
-        if (inputs.b) {
+        if (inputs.r) {
             outputs.leftStickX = 128 + (directions.x * 80);
         }
 
@@ -221,7 +221,7 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
             }
 
             /* Extended Up B Angles */
-            if (inputs.b) {
+            if (inputs.r) {
                 // 67.0362 - 3875 9125 = 31 73
                 outputs.leftStickX = 128 + (directions.x * 31);
                 outputs.leftStickY = 128 + (directions.y * 73);
@@ -263,10 +263,10 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
         outputs.leftStickX = 128 + (directions.x * 80);
     }
 
-    if (inputs.lightshield) {
+    if (inputs.z) {
         outputs.triggerRAnalog = 49;
     }
-    if (inputs.midshield) {
+    if (inputs.up) {
         outputs.triggerRAnalog = 94;
     }
 

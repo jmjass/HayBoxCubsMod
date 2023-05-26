@@ -15,6 +15,7 @@
 #include "input/NunchukInput.hpp"
 #include "joybus_utils.hpp"
 #include "modes/Melee20Button.hpp"
+#include "modes/MeleeRSwap.hpp"
 #include "stdlib.hpp"
 
 #include <pico/bootrom.h>
@@ -24,38 +25,39 @@ size_t backend_count;
 KeyboardMode *current_kb_mode = nullptr;
 
 GpioButtonMapping button_mappings[] = {
-    {&InputState::l,            5 },
+    { &InputState::l,           5 },
     { &InputState::left,        4 },
     { &InputState::down,        3 },
     { &InputState::right,       2 },
 
     { &InputState::mod_x,       6 },
     { &InputState::mod_y,       7 },
+    { &InputState::nunchuk_c,   8 }, // Dpad Toggle button
 
     { &InputState::select,      10},
-    { &InputState::start,       0 },
+    { &InputState::start,       1 },
     { &InputState::home,        11},
 
-    { &InputState::c_left,      13},
-    { &InputState::c_up,        12},
-    { &InputState::c_down,      15},
+    { &InputState::c_left,      12},
+    { &InputState::c_up,        16},
+    { &InputState::c_down,      13},
     { &InputState::a,           14},
-    { &InputState::c_right,     16},
+    { &InputState::c_right,     15},
 
-    { &InputState::b,           26},
-    { &InputState::x,           21},
-    { &InputState::z,           19},
+    { &InputState::b,           20},
+    { &InputState::x,           19},
+    { &InputState::z,           18},
     { &InputState::up,          17},
 
-    { &InputState::r,           27},
-    { &InputState::y,           22},
-    { &InputState::lightshield, 20},
-    { &InputState::midshield,   18},
+    { &InputState::r,           24},
+    { &InputState::y,           23},
+    { &InputState::lightshield, 22},
+    { &InputState::midshield,   21},
 };
 size_t button_count = sizeof(button_mappings) / sizeof(GpioButtonMapping);
 
 const Pinout pinout = {
-    .joybus_data = 28,
+    .joybus_data = 29,
     .mux = -1,
     .nunchuk_detect = -1,
     .nunchuk_sda = -1,
@@ -130,7 +132,7 @@ void setup() {
 
     // Default to Melee mode.
     primary_backend->SetGameMode(
-        new Melee20Button(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false })
+        new ProjectM(socd::SOCD_2IP_NO_REAC, { .true_z_press = false, .ledgedash_max_jump_traj = true })
     );
 }
 

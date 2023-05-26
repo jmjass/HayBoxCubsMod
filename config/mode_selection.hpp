@@ -8,6 +8,10 @@
 #include "modes/ProjectM.hpp"
 #include "modes/RivalsOfAether.hpp"
 #include "modes/Ultimate.hpp"
+#include "modes/MeleeRSwap.hpp"
+#include "modes/MeleeTopHomeRow.hpp"
+#include "modes/HDR.hpp"
+#include "modes/MarthRSwap.hpp"
 
 extern KeyboardMode *current_kb_mode;
 
@@ -52,6 +56,14 @@ void select_mode(CommunicationBackend *backend) {
             set_mode(backend, new FgcMode(socd::SOCD_NEUTRAL));
         } else if (inputs.b) {
             set_mode(backend, new RivalsOfAether(socd::SOCD_2IP));
+        } else if (inputs.a) {
+            set_mode(backend, new MeleeRSwap(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true }));
+        } else if (inputs.r) {
+            set_mode(backend, new MeleeTopHomeRow(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true }));
+        } else if (inputs.z) {
+            set_mode(backend, new HDR(socd::SOCD_2IP_NO_REAC));
+        } else if (inputs.x) {
+            set_mode(backend, new MarthRSwap(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true }));
         }
     } else if (inputs.mod_y && !inputs.mod_x && inputs.start) {
         if (inputs.l) {
