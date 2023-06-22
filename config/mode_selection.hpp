@@ -11,7 +11,8 @@
 #include "modes/MeleeRSwap.hpp"
 #include "modes/MeleeTopHomeRow.hpp"
 #include "modes/HDR.hpp"
-#include "modes/MarthRSwap.hpp"
+#include "modes/SheikRSwap.hpp"
+#include "modes/MeleePuff.hpp"
 
 extern KeyboardMode *current_kb_mode;
 
@@ -63,7 +64,9 @@ void select_mode(CommunicationBackend *backend) {
         } else if (inputs.z) {
             set_mode(backend, new HDR(socd::SOCD_2IP_NO_REAC));
         } else if (inputs.x) {
-            set_mode(backend, new MarthRSwap(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true }));
+            set_mode(backend, new SheikRSwap(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true }));
+        }else if (inputs.y){
+            set_mode(backend, new MeleePuff(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true }));
         }
     } else if (inputs.mod_y && !inputs.mod_x && inputs.start) {
         if (inputs.l) {

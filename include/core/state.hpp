@@ -23,6 +23,7 @@ typedef struct inputstate {
     bool z = false;
     bool lightshield = false;
     bool midshield = false;
+    bool leftmidshield = false;
     bool select = false;
     bool start = false;
     bool home = false;

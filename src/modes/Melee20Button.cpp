@@ -266,7 +266,7 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
     if (inputs.lightshield) {
         outputs.triggerRAnalog = 49;
     }
-    if (inputs.midshield) {
+    if (inputs.midshield || inputs.leftmidshield) {
         outputs.triggerRAnalog = 94;
     }
 

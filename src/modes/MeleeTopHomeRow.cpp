@@ -266,7 +266,7 @@ void MeleeTopHomeRow::UpdateAnalogOutputs(InputState &inputs, OutputState &outpu
     if (inputs.z) {
         outputs.triggerRAnalog = 49;
     }
-    if (inputs.up) {
+    if (inputs.up || inputs.leftmidshield) {
         outputs.triggerRAnalog = 94;
     }
 

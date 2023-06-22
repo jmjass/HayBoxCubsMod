@@ -1,10 +1,10 @@
-#include "modes/MarthRSwap.hpp"
+#include "modes/SheikRSwap.hpp"
 
 #define ANALOG_STICK_MIN 48
 #define ANALOG_STICK_NEUTRAL 128
 #define ANALOG_STICK_MAX 208
 
-MarthRSwap::MarthRSwap(socd::SocdType socd_type, MarthRSwapOptions options)
+SheikRSwap::SheikRSwap(socd::SocdType socd_type, SheikRSwapOptions options)
     : ControllerMode(socd_type) {
     _socd_pair_count = 4;
     _socd_pairs = new socd::SocdPair[_socd_pair_count]{
@@ -18,12 +18,12 @@ MarthRSwap::MarthRSwap(socd::SocdType socd_type, MarthRSwapOptions options)
     _horizontal_socd = false;
 }
 
-void MarthRSwap::HandleSocd(InputState &inputs) {
+void SheikRSwap::HandleSocd(InputState &inputs) {
     _horizontal_socd = inputs.left && inputs.right;
     InputMode::HandleSocd(inputs);
 }
 
-void MarthRSwap::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
+void SheikRSwap::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
     outputs.a = inputs.a;
     outputs.b = inputs.r;
     outputs.x = inputs.x;
@@ -51,7 +51,7 @@ void MarthRSwap::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) 
         outputs.dpadRight = true;
 }
 
-void MarthRSwap::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
+void SheikRSwap::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
     // Coordinate calculations to make modifier handling simpler.
     UpdateDirections(
         inputs.left,
@@ -96,9 +96,9 @@ void MarthRSwap::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
             outputs.leftStickX = 128 + (directions.x * 59);
             outputs.leftStickY = 128 + (directions.y * 25);
             if (shield_button_pressed) {
-                // MX + L, R, LS, and MS + q1/2/3/4 = 6375 3750 = 51 30
-                outputs.leftStickX = 128 + (directions.x * 51);
-                outputs.leftStickY = 128 + (directions.y * 30);
+                // MX + L, R, LS, and MS + q1/2/3/4 = 8000 5000 = 48 32
+                outputs.leftStickX = 128 + (directions.x * 64);
+                outputs.leftStickY = 128 + (directions.y * 40);
             }
         }
 
@@ -181,10 +181,10 @@ void MarthRSwap::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
                 // MY + L, R, LS, and MS + q1/2 = 4750 8750 = 38 70
                 outputs.leftStickX = 128 + (directions.x * 38);
                 outputs.leftStickY = 128 + (directions.y * 70);
-                // MY + L, R, LS, and MS + q3/4 = 5000 8500 = 40 68
+                // MY + L, R, LS, and MS + q3/4 = 5000 7250 = 40 58
                 if (directions.y == -1) {
                     outputs.leftStickX = 128 + (directions.x * 40);
-                    outputs.leftStickY = 128 + (directions.y * 68);
+                    outputs.leftStickY = 128 + (directions.y * 58);
                 }
             }
         }
@@ -266,7 +266,7 @@ void MarthRSwap::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
     if (inputs.lightshield) {
         outputs.triggerRAnalog = 49;
     }
-    if (inputs.midshield) {
+    if (inputs.midshield || inputs.leftmidshield) {
         outputs.triggerRAnalog = 94;
     }
 

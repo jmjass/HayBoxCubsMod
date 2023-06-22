@@ -1,24 +1,24 @@
-#ifndef _MODES_MARTHRSWAP_HPP
-#define _MODES_MARTHRSWAP_HPP
+#ifndef _MODES_MELEEPUFF_HPP
+#define _MODES_MELEEPUFF_HPP
 
 #include "core/ControllerMode.hpp"
 #include "core/socd.hpp"
 #include "core/state.hpp"
 
 typedef struct {
-    bool crouch_walk_os = true;
-} MarthRSwapOptions;
+    bool crouch_walk_os = false;
+} MeleePuffOptions;
 
-class MarthRSwap : public ControllerMode {
+class MeleePuff : public ControllerMode {
   public:
-    MarthRSwap(socd::SocdType socd_type, MarthRSwapOptions options = {});
+    MeleePuff(socd::SocdType socd_type, MeleePuffOptions options = {});
 
   protected:
     void UpdateDigitalOutputs(InputState &inputs, OutputState &outputs);
     void UpdateAnalogOutputs(InputState &inputs, OutputState &outputs);
 
   private:
-    MarthRSwapOptions _options;
+    MeleePuffOptions _options;
     bool _horizontal_socd;
 
     void HandleSocd(InputState &inputs);

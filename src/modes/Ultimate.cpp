@@ -21,7 +21,7 @@ void Ultimate::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
     outputs.x = inputs.x;
     outputs.y = inputs.y;
     outputs.buttonL = inputs.lightshield;
-    outputs.buttonR = inputs.z || inputs.midshield;
+    outputs.buttonR = inputs.z || inputs.midshield || inputs.leftmidshield;
     outputs.triggerLDigital = inputs.l;
     outputs.triggerRDigital = inputs.r;
     outputs.start = inputs.start;

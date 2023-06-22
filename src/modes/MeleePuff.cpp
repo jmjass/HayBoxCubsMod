@@ -1,11 +1,11 @@
-/* HDR profile by Faye */
-#include "modes/HDR.hpp"
+#include "modes/MeleePuff.hpp"
 
-#define ANALOG_STICK_MIN 28
+#define ANALOG_STICK_MIN 48
 #define ANALOG_STICK_NEUTRAL 128
-#define ANALOG_STICK_MAX 228
+#define ANALOG_STICK_MAX 208
 
-HDR::HDR(socd::SocdType socd_type) : ControllerMode(socd_type) {
+MeleePuff::MeleePuff(socd::SocdType socd_type, MeleePuffOptions options)
+    : ControllerMode(socd_type) {
     _socd_pair_count = 4;
     _socd_pairs = new socd::SocdPair[_socd_pair_count]{
         socd::SocdPair{&InputState::left,    &InputState::right  },
@@ -13,30 +13,45 @@ HDR::HDR(socd::SocdType socd_type) : ControllerMode(socd_type) {
         socd::SocdPair{ &InputState::c_left, &InputState::c_right},
         socd::SocdPair{ &InputState::c_down, &InputState::c_up   },
     };
+
+    _options = options;
+    _horizontal_socd = false;
 }
 
-void HDR::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
+void MeleePuff::HandleSocd(InputState &inputs) {
+    _horizontal_socd = inputs.left && inputs.right;
+    InputMode::HandleSocd(inputs);
+}
+
+void MeleePuff::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
     outputs.a = inputs.a;
     outputs.b = inputs.r;
     outputs.x = inputs.x;
     outputs.y = inputs.y;
     outputs.buttonR = inputs.z;
-    outputs.triggerLDigital = inputs.l;
+    if (inputs.nunchuk_connected) {
+        outputs.triggerLDigital = inputs.nunchuk_z;
+    } else {
+        outputs.triggerLDigital = inputs.l;
+    }
     outputs.triggerRDigital = inputs.b;
     outputs.start = inputs.start;
-    outputs.select = inputs.select;
-    outputs.home = inputs.home;
 
-    // Turn on D-Pad layer by holding Mod X + Mod Y or Nunchuk C button.
+    // Activate D-Pad layer by holding Mod X + Mod Y or Nunchuk C button.
     if ((inputs.mod_x && inputs.mod_y) || inputs.nunchuk_c) {
         outputs.dpadUp = inputs.c_up;
         outputs.dpadDown = inputs.c_down;
         outputs.dpadLeft = inputs.c_left;
         outputs.dpadRight = inputs.c_right;
     }
+
+    if (inputs.select)
+        outputs.dpadLeft = true;
+    if (inputs.home)
+        outputs.dpadRight = true;
 }
 
-void HDR::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
+void MeleePuff::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
     // Coordinate calculations to make modifier handling simpler.
     UpdateDirections(
         inputs.left,
@@ -53,73 +68,68 @@ void HDR::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         outputs
     );
 
-    bool shield_button_pressed = inputs.l || inputs.b;
-    
-    //imported from PM code
-    outputs.dpadUp = outputs.dpadUp || inputs.midshield || inputs.leftmidshield;
-
-        //imported from PM code
-    outputs.dpadDown = outputs.dpadDown || inputs.lightshield;
+    bool shield_button_pressed = inputs.l || inputs.b || inputs.lightshield || inputs.midshield;
+    if (directions.diagonal) {
+        // q1/2 = 7000 7000
+        outputs.leftStickX = 128 + (directions.x * 56);
+        outputs.leftStickY = 128 + (directions.y * 56);
+        // L, R, LS, and MS + q3/4 = 7000 6875 (For vanilla shield drop. Gives 44.5
+        // degree wavedash). Also used as default q3/4 diagonal if crouch walk option select is
+        // enabled.
+        if (directions.y == -1 && (shield_button_pressed || _options.crouch_walk_os)) {
+            outputs.leftStickX = 128 + (directions.x * 57);
+            outputs.leftStickY = 128 + (directions.y * 55);
+        }
+    }
 
     if (inputs.mod_x) {
-        // MX + Horizontal = 6625 = 53
+        // MX + Horizontal (even if shield is held) = 6625 = 53
         if (directions.horizontal) {
             outputs.leftStickX = 128 + (directions.x * 53);
-            // Horizontal Shield tilt = 51
-            if (shield_button_pressed) {
-                outputs.leftStickX = 128 + (directions.x * 51);
-            }
-            // Horizontal Tilts = 36
-            if (inputs.a) {
-                outputs.leftStickX = 128 + (directions.x * 36);
-            }
         }
-        // MX + Vertical = 44
+        // MX + Vertical (even if shield is held) = 5375 = 43
         if (directions.vertical) {
-            outputs.leftStickY = 128 + (directions.y * 44);
-            // Vertical Shield Tilt = 51
-            if (shield_button_pressed) {
-                outputs.leftStickY = 128 + (directions.y * 51);
-            }
+            outputs.leftStickY = 128 + (directions.y * 43);
         }
         if (directions.diagonal) {
-            // MX + q1/2/3/4 = 53 35
-            outputs.leftStickX = 128 + (directions.x * 53);
-            outputs.leftStickY = 128 + (directions.y * 35);
+            // MX + q1/2/3/4 = 7375 3125 = 59 25
+            outputs.leftStickX = 128 + (directions.x * 59);
+            outputs.leftStickY = 128 + (directions.y * 25);
             if (shield_button_pressed) {
                 // MX + L, R, LS, and MS + q1/2/3/4 = 6375 3750 = 51 30
-                outputs.leftStickX = 128 + (directions.x * 51);
-                outputs.leftStickY = 128 + (directions.y * 30);
+                outputs.leftStickX = 128 + (directions.x * 73);
+                outputs.leftStickY = 128 + (directions.y * 31);
             }
         }
 
-        // Angled fsmash/ftilt with C-Stick + MX
+        // Angled fsmash
         if (directions.cx != 0) {
-            outputs.rightStickX = 128 + (directions.cx * 127);
-            outputs.rightStickY = 128 + (directions.y * 59);
+            // 8500 5250 = 68 42
+            outputs.rightStickX = 128 + (directions.cx * 68);
+            outputs.rightStickY = 128 + (directions.y * 42);
         }
 
         /* Up B angles */
         if (directions.diagonal && !shield_button_pressed) {
-            // (33.44) = 53 35
-                outputs.leftStickX = 128 + (directions.x * 73);
-                outputs.leftStickY = 128 + (directions.y * 31);
-            // (39.05) = 53 43
+            // 22.9638 - 7375 3125 = 59 25
+            outputs.leftStickX = 128 + (directions.x * 59);
+            outputs.leftStickY = 128 + (directions.y * 25);
+            // 27.37104 - 7000 3625 (27.38) = 56 29
             if (inputs.c_down) {
-                outputs.leftStickX = 128 + (directions.x * 49);
-                outputs.leftStickY = 128 + (directions.y * 42);
+                outputs.leftStickX = 128 + (directions.x * 56);
+                outputs.leftStickY = 128 + (directions.y * 29);
             }
-            // (36.35) = 53 39
+            // 31.77828 - 7875 4875 (31.76) = 63 39
             if (inputs.c_left) {
-                outputs.leftStickX = 128 + (directions.x * 49);
-                outputs.leftStickY = 128 + (directions.y * 42);
+                outputs.leftStickX = 128 + (directions.x * 63);
+                outputs.leftStickY = 128 + (directions.y * 39);
             }
-            // (30.32) = 56 41
+            // 36.18552 - 7000 5125 (36.21) = 56 41
             if (inputs.c_up) {
-                outputs.leftStickX = 128 + (directions.x * 49);
-                outputs.leftStickY = 128 + (directions.y * 42);
+                outputs.leftStickX = 128 + (directions.x * 56);
+                outputs.leftStickY = 128 + (directions.y * 41);
             }
-            // (27.85) = 49 42
+            // 40.59276 - 6125 5250 (40.6) = 49 42
             if (inputs.c_right) {
                 outputs.leftStickX = 128 + (directions.x * 49);
                 outputs.leftStickY = 128 + (directions.y * 42);
@@ -127,10 +137,10 @@ void HDR::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
 
             /* Extended Up B Angles */
             if (inputs.r) {
-                // (33.29) = 67 44
-                outputs.leftStickX = 128 + (directions.x * 73);
-                outputs.leftStickY = 128 + (directions.y * 31);
-                // (39.38) = 67 55
+                // 22.9638 - 9125 3875 (23.0) = 73 31
+                outputs.leftStickX = 128 + (directions.x * 52);
+                outputs.leftStickY = 128 + (directions.y * 52);
+                // 27.37104 - 8750 4500 (27.2) = 70 36
                 if (inputs.c_down) {
                     outputs.leftStickX = 128 + (directions.x * 70);
                     outputs.leftStickY = 128 + (directions.y * 36);
@@ -150,12 +160,6 @@ void HDR::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
                     outputs.leftStickX = 128 + (directions.x * 51);
                     outputs.leftStickY = 128 + (directions.y * 43);
                 }
-            }
-
-            // Angled Ftilts
-            if (inputs.a) {
-                outputs.leftStickX = 128 + (directions.x * 36);
-                outputs.leftStickY = 128 + (directions.y * 26);
             }
         }
     }
@@ -253,11 +257,24 @@ void HDR::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         outputs.rightStickY = 128 + (directions.cy * 68);
     }
 
-    if (inputs.l) {
+    // Horizontal SOCD overrides X-axis modifiers (for ledgedash maximum jump
+    // trajectory).
+    if (_horizontal_socd && !directions.vertical) {
+        outputs.leftStickX = 128 + (directions.x * 80);
+    }
+
+    if (inputs.lightshield) {
+        outputs.triggerRAnalog = 49;
+    }
+    if (inputs.midshield || inputs.leftmidshield) {
+        outputs.triggerRAnalog = 94;
+    }
+
+    if (outputs.triggerLDigital) {
         outputs.triggerLAnalog = 140;
     }
 
-    if (inputs.b) {
+    if (outputs.triggerRDigital) {
         outputs.triggerRAnalog = 140;
     }
 
