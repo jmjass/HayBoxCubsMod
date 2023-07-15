@@ -16,6 +16,7 @@
 #include "joybus_utils.hpp"
 #include "modes/Melee20Button.hpp"
 #include "modes/MeleeRSwap.hpp"
+#include "modes/WingmanFgcMode.hpp"
 #include "stdlib.hpp"
 
 #include <pico/bootrom.h>
@@ -25,7 +26,7 @@ size_t backend_count;
 KeyboardMode *current_kb_mode = nullptr;
 
 GpioButtonMapping button_mappings[] = {
-    { &InputState::l,           5 },
+    {&InputState::l,            5 },
     { &InputState::left,        4 },
     { &InputState::down,        3 },
     { &InputState::right,       2 },
@@ -35,30 +36,30 @@ GpioButtonMapping button_mappings[] = {
     { &InputState::nunchuk_c,   8 }, // Dpad Toggle button
 
     { &InputState::select,      10},
-    { &InputState::start,       1 },
+    { &InputState::start,       0 },
     { &InputState::home,        11},
 
-    { &InputState::c_left,      12},
-    { &InputState::c_up,        16},
-    { &InputState::c_down,      13},
+    { &InputState::c_left,      13},
+    { &InputState::c_up,        12},
+    { &InputState::c_down,      15},
     { &InputState::a,           14},
-    { &InputState::c_right,     15},
+    { &InputState::c_right,     16},
 
-    { &InputState::b,           20},
-    { &InputState::x,           19},
-    { &InputState::z,           18},
+    { &InputState::b,           26},
+    { &InputState::x,           21},
+    { &InputState::z,           19},
     { &InputState::up,          17},
 
-    { &InputState::r,           24},
-    { &InputState::y,           23},
-    { &InputState::lightshield, 22},
-    { &InputState::midshield,   21},
-    { &InputState::leftmidshield,   0}, //optional 2nd pinky button
+    { &InputState::r,           27},
+    { &InputState::y,           22},
+    { &InputState::lightshield, 20},
+    { &InputState::midshield,   18},
+    { &InputState::leftmidshield, 1}, // 2nd pinky left button
 };
 size_t button_count = sizeof(button_mappings) / sizeof(GpioButtonMapping);
 
 const Pinout pinout = {
-    .joybus_data = 29,
+    .joybus_data = 28,
     .mux = -1,
     .nunchuk_detect = -1,
     .nunchuk_sda = -1,
@@ -99,7 +100,7 @@ void setup() {
             backends = new CommunicationBackend *[backend_count] { primary_backend };
 
             // Default to Ultimate mode on Switch.
-            primary_backend->SetGameMode(new Ultimate(socd::SOCD_2IP));
+            primary_backend->SetGameMode(new WingmanFgcMode(socd::SOCD_NEUTRAL));
             return;
         } else if (button_holds.z) {
             // If no console detected and Z is held on plugin then use DInput backend.
@@ -133,7 +134,7 @@ void setup() {
 
     // Default to Melee mode.
     primary_backend->SetGameMode(
-        new RivalsOfAether(socd::SOCD_2IP)
+       new SheikRSwap(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true })
     );
 }
 

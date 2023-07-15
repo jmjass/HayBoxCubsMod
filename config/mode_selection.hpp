@@ -13,6 +13,7 @@
 #include "modes/HDR.hpp"
 #include "modes/SheikRSwap.hpp"
 #include "modes/MeleePuff.hpp"
+#include "modes/WingmanFgcMode.hpp"
 
 extern KeyboardMode *current_kb_mode;
 
@@ -48,7 +49,7 @@ void select_mode(CommunicationBackend *backend) {
                 backend,
                 new ProjectM(
                     socd::SOCD_2IP_NO_REAC,
-                    { .true_z_press = false, .ledgedash_max_jump_traj = true }
+                    { .true_z_press = true, .ledgedash_max_jump_traj = true }
                 )
             );
         } else if (inputs.down) {
