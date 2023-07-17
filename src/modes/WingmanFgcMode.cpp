@@ -21,8 +21,8 @@ void WingmanFgcMode::UpdateDigitalOutputs(InputState &inputs, OutputState &outpu
     outputs.dpadRight = inputs.right;
     outputs.dpadDown = inputs.down;
     outputs.dpadUp = inputs.mod_x;
-    outputs.leftStickClick = inputs.a;
-    outputs.rightStickClick = inputs.c_up;
+    outputs.leftStickClick = inputs.l;
+    outputs.rightStickClick = inputs.a;
 
     // Menu keys
     outputs.start = inputs.start;
