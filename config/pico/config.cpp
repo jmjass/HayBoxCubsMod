@@ -59,7 +59,7 @@ GpioButtonMapping button_mappings[] = {
 size_t button_count = sizeof(button_mappings) / sizeof(GpioButtonMapping);
 
 const Pinout pinout = {
-    .joybus_data = 29,
+    .joybus_data = 28,
     .mux = -1,
     .nunchuk_detect = -1,
     .nunchuk_sda = -1,
@@ -134,7 +134,7 @@ void setup() {
 
     // Default to Melee mode.
     primary_backend->SetGameMode(
-       new MeleePuff(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true })
+       new Melee20Button(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false })
     );
 }
 
