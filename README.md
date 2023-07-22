@@ -1,6 +1,7 @@
-# HayBox
+# HayBox Cubs Mod
 
 HayBox is a modular, cross-platform firmware for digital or mixed analog/digital controllers, primarily targeted at [B0XX](https://b0xx.com)-style controllers.
+This modification is tailored to work with the Open Oblong controller and includes multiple added modes such as character profiles and button swaps.
 
 [![GitHub issues](https://img.shields.io/github/issues/JonnyHaystack/HayBox)](https://github.com/JonnyHaystack/HayBox/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/JonnyHaystack/HayBox)](https://github.com/JonnyHaystack/HayBox/pulls)
@@ -134,6 +135,11 @@ The default controller mode button combinations are:
 - Mod X + Start + Down - Ultimate mode
 - Mod X + Start + Right - FGC mode (Hitbox style fighting game layout)
 - Mod X + Start + B - Rivals of Aether mode
+- Mod X + Start + A - Melee R Swap
+- Mod X + Start + R - Melee Top Row Home Row
+- Mod X + Start + Z - HDR
+- Mod X + Start + X - Melee Sheik Mode
+- Mod X + Start + Y - Melee Puff Mode
 
 Default keyboard mode button combinations (only available when using DInput backend, **not** with XInput):
 - Mod Y + Start + L - Default keyboard mode
