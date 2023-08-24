@@ -61,7 +61,7 @@ void select_mode(CommunicationBackend *backend) {
         } else if (inputs.a) {
             set_mode(backend, new MeleeRSwap(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true }));
         } else if (inputs.r) {
-            set_mode(backend, new MeleeTopHomeRow(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true }));
+            set_mode(backend, new MeleeTopHomeRow(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false }));
         } else if (inputs.z) {
             set_mode(backend, new HDR(socd::SOCD_2IP_NO_REAC));
         } else if (inputs.x) {

@@ -4,8 +4,7 @@
 #define ANALOG_STICK_NEUTRAL 128
 #define ANALOG_STICK_MAX 208
 
-SheikRSwap::SheikRSwap(socd::SocdType socd_type, SheikRSwapOptions options)
-    : ControllerMode(socd_type) {
+SheikRSwap::SheikRSwap(socd::SocdType socd_type, SheikRSwapOptions options) {
     _socd_pair_count = 4;
     _socd_pairs = new socd::SocdPair[_socd_pair_count]{
         socd::SocdPair{&InputState::left,    &InputState::right  },

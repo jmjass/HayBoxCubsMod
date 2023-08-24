@@ -4,8 +4,7 @@
 #define ANALOG_STICK_NEUTRAL 128
 #define ANALOG_STICK_MAX 208
 
-MeleePuff::MeleePuff(socd::SocdType socd_type, MeleePuffOptions options)
-    : ControllerMode(socd_type) {
+MeleePuff::MeleePuff(socd::SocdType socd_type, MeleePuffOptions options) {
     _socd_pair_count = 4;
     _socd_pairs = new socd::SocdPair[_socd_pair_count]{
         socd::SocdPair{&InputState::left,    &InputState::right  },
