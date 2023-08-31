@@ -59,15 +59,15 @@ void select_mode(CommunicationBackend *backend) {
         } else if (inputs.b) {
             set_mode(backend, new RivalsOfAether(socd::SOCD_2IP));
         } else if (inputs.a) {
-            set_mode(backend, new MeleeRSwap(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true }));
+            set_mode(backend, new MeleeRSwap(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false }));
         } else if (inputs.r) {
             set_mode(backend, new MeleeTopHomeRow(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false }));
         } else if (inputs.z) {
             set_mode(backend, new HDR(socd::SOCD_2IP_NO_REAC));
         } else if (inputs.x) {
-            set_mode(backend, new SheikRSwap(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true }));
+            set_mode(backend, new SheikRSwap(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false }));
         }else if (inputs.y){
-            set_mode(backend, new MeleePuff(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = true }));
+            set_mode(backend, new MeleePuff(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false }));
         }
     } else if (inputs.mod_y && !inputs.mod_x && inputs.start) {
         if (inputs.l) {

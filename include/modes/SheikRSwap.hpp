@@ -6,7 +6,7 @@
 #include "core/state.hpp"
 
 typedef struct {
-    bool crouch_walk_os = true;
+    bool crouch_walk_os = false;
 } SheikRSwapOptions;
 
 class SheikRSwap : public ControllerMode {

@@ -18,6 +18,7 @@
 #include "modes/MeleeRSwap.hpp"
 #include "modes/WingmanFgcMode.hpp"
 #include "stdlib.hpp"
+#include "modes/SheikRSwap.hpp"
 
 #include <pico/bootrom.h>
 
@@ -134,7 +135,7 @@ void setup() {
 
     // Default to Melee mode.
     primary_backend->SetGameMode(
-       new Melee20Button(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false })
+       new MeleePuff(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false })
     );
 }
 
