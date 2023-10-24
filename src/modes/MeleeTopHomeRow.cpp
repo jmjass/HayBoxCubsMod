@@ -25,8 +25,8 @@ void MeleeTopHomeRow::HandleSocd(InputState &inputs) {
 void MeleeTopHomeRow::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
     outputs.a = inputs.a;
     outputs.b = inputs.r;
-    outputs.x = inputs.y;
-    outputs.y = inputs.x;
+    outputs.x = inputs.x;
+    outputs.y = inputs.y;
     outputs.buttonR = inputs.lightshield;
     if (inputs.nunchuk_connected) {
         outputs.triggerLDigital = inputs.nunchuk_z;
@@ -76,7 +76,7 @@ void MeleeTopHomeRow::UpdateAnalogOutputs(InputState &inputs, OutputState &outpu
         // degree wavedash). Also used as default q3/4 diagonal if crouch walk option select is
         // enabled.
         if (directions.y == -1 && (shield_button_pressed || _options.crouch_walk_os)) {
-            outputs.leftStickX = 128 + (directions.x * 56);
+            outputs.leftStickX = 128 + (directions.x * 57);
             outputs.leftStickY = 128 + (directions.y * 55);
         }
     }
@@ -97,7 +97,7 @@ void MeleeTopHomeRow::UpdateAnalogOutputs(InputState &inputs, OutputState &outpu
             if (shield_button_pressed) {
                 // MX + L, R, LS, and MS + q1/2/3/4 = 6375 3750 = 51 30
                 outputs.leftStickX = 128 + (directions.x * 51);
-                outputs.leftStickY = 128 + (directions.y * 30);
+                outputs.leftStickY = 128 + (directions.y * 33);
             }
         }
 

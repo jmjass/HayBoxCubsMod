@@ -12,8 +12,6 @@
 #include "modes/MeleeTopHomeRow.hpp"
 #include "modes/HDR.hpp"
 #include "modes/SheikRSwap.hpp"
-#include "modes/MeleePuff.hpp"
-#include "modes/MeleeYoshi.hpp"
 #include "modes/WingmanFgcMode.hpp"
 
 extern KeyboardMode *current_kb_mode;
@@ -67,15 +65,13 @@ void select_mode(CommunicationBackend *backend) {
             set_mode(backend, new HDR(socd::SOCD_2IP_NO_REAC));
         } else if (inputs.x) {
             set_mode(backend, new SheikRSwap(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false }));
-        }else if (inputs.y){
-            set_mode(backend, new MeleePuff(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false }));
         }else if (inputs.lightshield){
             set_mode(backend, new Melee20Button(socd::SOCD_NEUTRAL, { .crouch_walk_os = false }));
         }else if (inputs.midshield){
             set_mode(backend, new MeleeRSwap(socd::SOCD_NEUTRAL, { .crouch_walk_os = false }));
-        }else if (inputs.c_down){
+        }/*else if (inputs.c_down){
             set_mode(backend, new MeleeYoshi(socd::SOCD_NEUTRAL, { .crouch_walk_os = false}));
-        }
+        }*/
     } else if (inputs.mod_y && !inputs.mod_x && inputs.start) {
         if (inputs.l) {
             set_mode(backend, new DefaultKeyboardMode(socd::SOCD_2IP));

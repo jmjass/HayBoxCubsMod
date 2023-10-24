@@ -139,7 +139,6 @@ The default controller mode button combinations are:
 - Mod X + Start + R - Melee Top Row Home Row
 - Mod X + Start + Z - HDR
 - Mod X + Start + X - Melee Sheik Mode
-- Mod X + Start + Y - Melee Puff Mode
 - Mod X + Start + Light Shield - Melee Default Layout Neutral SOCD
 - Mod X + Start + Mid Shield - Melee R Swap Neutral SOCD
 
