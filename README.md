@@ -163,14 +163,15 @@ switch game anyway. It also serves the purpose of reducing the number of buttons
 you have to hold with one hand while plugging in.
 
 The default controller mode button combinations are:
-- Mod X + Start + L - Melee mode (default)
-- Mod X + Start + Left - Project M/Project+ mode
-- Mod X + Start + Down - Ultimate mode
-- Mod X + Start + Right - FGC mode (Hitbox style fighting game layout)
-- Mod X + Start + B - Rivals of Aether mode
+- Mod X + Start + L - Melee Mode (default)
+- Mod X + Start + Left - Project M/Project+ Mode
+- Mod X + Start + Down - Ultimate Mode
+- Mod X + Start + Right - FGC Mode (Hitbox style fighting game layout)
+- Mod X + Start + B - Rivals of Aether Mode
 - Mod X + Start + A - Melee R Swap
 - Mod X + Start + R - Melee Top Row Home Row
-- Mod X + Start + X - Melee Sheik Mode
+- Mod X + Start + X - Melee Sheik R Swap
+- Mod X + Start + Z - Melee Falco Wavedash Angle
 - Mod X + Start + Light Shield - Melee Default Layout Neutral SOCD
 - Mod X + Start + Mid Shield - Melee R Swap Neutral SOCD
 

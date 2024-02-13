@@ -55,7 +55,6 @@ GpioButtonMapping button_mappings[] = {
     { &InputState::y,           22},
     { &InputState::lightshield, 20},
     { &InputState::midshield,   18},
-    //{ &InputState::leftmidshield, 1}, // 2nd pinky left button
 };
 size_t button_count = sizeof(button_mappings) / sizeof(GpioButtonMapping);
 
@@ -75,7 +74,7 @@ void setup() {
     gpio_input->UpdateInputs(button_holds);
 
     // Bootsel button hold as early as possible for safety.
-    if (button_holds.start) {
+    if (button_holds.start || (button_holds.mod_x && button_holds.l)) {
         reset_usb_boot(0, 0);
     }
 
@@ -102,6 +101,16 @@ void setup() {
 
             // Default to Ultimate mode on Switch.
             primary_backend->SetGameMode(new WingmanFgcMode(socd::SOCD_NEUTRAL, socd::SOCD_NEUTRAL));
+            return;
+        } else if (button_holds.y) {
+            // If no console detected and X is held on plugin then use Switch USB backend.
+            NintendoSwitchBackend::RegisterDescriptor();
+            backend_count = 1;
+            primary_backend = new NintendoSwitchBackend(input_sources, input_source_count);
+            backends = new CommunicationBackend *[backend_count] { primary_backend };
+
+            // Default to Ultimate mode on Switch.
+            primary_backend->SetGameMode(new Ultimate(socd::SOCD_2IP));
             return;
         } else if (button_holds.z) {
             // If no console detected and Z is held on plugin then use DInput backend.
@@ -135,7 +144,7 @@ void setup() {
 
     // Default to Melee mode.
     primary_backend->SetGameMode(
-       new Melee20Button(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false })
+       new MeleeYoshi(socd::SOCD_NEUTRAL, { .crouch_walk_os = false})
     );
 }
 

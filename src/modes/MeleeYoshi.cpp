@@ -8,7 +8,7 @@ MeleeYoshi::MeleeYoshi(socd::SocdType socd_type, MeleeYoshiOptions options) {
     _socd_pair_count = 4;
     _socd_pairs = new socd::SocdPair[_socd_pair_count]{
         socd::SocdPair{&InputState::left,    &InputState::right,   socd_type},
-        socd::SocdPair{ &InputState::down,   &InputState::up,      socd_type},
+        socd::SocdPair{ &InputState::down,   &InputState::b,      socd_type},
         socd::SocdPair{ &InputState::c_left, &InputState::c_right, socd_type},
         socd::SocdPair{ &InputState::c_down, &InputState::c_up,    socd_type},
     };
@@ -31,13 +31,13 @@ void MeleeYoshi::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) 
     if (inputs.nunchuk_connected) {
         outputs.triggerLDigital = inputs.nunchuk_z;
     } else {
-        outputs.triggerLDigital = inputs.l;
+        outputs.triggerLDigital = inputs.z;
     }
     outputs.triggerRDigital = inputs.r;
     outputs.start = inputs.start;
 
     // Activate D-Pad layer by holding Mod X + Mod Y or Nunchuk C button.
-    if ((inputs.mod_x && inputs.mod_y) || inputs.nunchuk_c) {
+    if ((inputs.mod_x && inputs.mod_y) || inputs.l) {
         outputs.dpadUp = inputs.c_up;
         outputs.dpadDown = inputs.c_down;
         outputs.dpadLeft = inputs.c_left;
@@ -59,7 +59,7 @@ void MeleeYoshi::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         inputs.b,
         inputs.c_left,
         inputs.c_right,
-        inputs.lightshield,
+        inputs.mod_y,
         inputs.c_up,
         ANALOG_STICK_MIN,
         ANALOG_STICK_NEUTRAL,
@@ -76,7 +76,7 @@ void MeleeYoshi::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         // degree wavedash). Also used as default q3/4 diagonal if crouch walk option select is
         // enabled.
         if (directions.y == -1 && (shield_button_pressed || _options.crouch_walk_os)) {
-            outputs.leftStickX = 128 + (directions.x * 57);
+            outputs.leftStickX = 128 + (directions.x * 56);
             outputs.leftStickY = 128 + (directions.y * 55);
         }
     }
@@ -90,22 +90,10 @@ void MeleeYoshi::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         if (directions.vertical) {
             outputs.leftStickY = 128 + (directions.y * 43);
         }
-        if (directions.diagonal) {
-            // MX + q1/2/3/4 = 7375 3125 = 59 25
-            outputs.leftStickX = 128 + (directions.x * 59);
-            outputs.leftStickY = 128 + (directions.y * 25);
-            if (shield_button_pressed) {
-                // MX + L, R, LS, and MS + q1/2/3/4 = 6375 3750 = 51 30
-                outputs.leftStickX = 128 + (directions.x * 51);
-                outputs.leftStickY = 128 + (directions.y * 33);
-            }
-        }
-
-        // Angled fsmash
-        if (directions.cx != 0) {
-            // 8500 5250 = 68 42
-            outputs.rightStickX = 128 + (directions.cx * 68);
-            outputs.rightStickY = 128 + (directions.y * 42);
+        if (directions.diagonal && shield_button_pressed) {
+            // MX + L, R, LS, and MS + q1/2/3/4 = 6375 3750 = 51 30
+            outputs.leftStickX = 128 + (directions.x * 51);
+            outputs.leftStickY = 128 + (directions.y * 30);
         }
 
         /* Up B angles */
@@ -135,7 +123,7 @@ void MeleeYoshi::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
             }
 
             /* Extended Up B Angles */
-            if (inputs.c_down) {
+            if (inputs.b) {
                 // 22.9638 - 9125 3875 (23.0) = 73 31
                 outputs.leftStickX = 128 + (directions.x * 73);
                 outputs.leftStickY = 128 + (directions.y * 31);
@@ -161,9 +149,16 @@ void MeleeYoshi::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
                 }
             }
         }
+
+        // Angled fsmash
+        if (directions.cx != 0) {
+            // 8500 5250 = 68 42
+            outputs.rightStickX = 128 + (directions.cx * 68);
+            outputs.rightStickY = 128 + (directions.y * 42);
+        }
     }
 
-    if (inputs.mod_y) {
+    if (inputs.nunchuk_c) {
         // MY + Horizontal (even if shield is held) = 3375 = 27
         if (directions.horizontal) {
             outputs.leftStickX = 128 + (directions.x * 27);
@@ -172,24 +167,19 @@ void MeleeYoshi::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         if (directions.vertical) {
             outputs.leftStickY = 128 + (directions.y * 59);
         }
-        if (directions.diagonal) {
-            // MY + q1/2/3/4 = 3125 7375 = 25 59
-            outputs.leftStickX = 128 + (directions.x * 25);
-            outputs.leftStickY = 128 + (directions.y * 59);
-            if (shield_button_pressed) {
-                // MY + L, R, LS, and MS + q1/2 = 4750 8750 = 38 70
-                outputs.leftStickX = 128 + (directions.x * 38);
-                outputs.leftStickY = 128 + (directions.y * 70);
-                // MY + L, R, LS, and MS + q3/4 = 5000 8500 = 40 68
-                if (directions.y == -1) {
-                    outputs.leftStickX = 128 + (directions.x * 40);
-                    outputs.leftStickY = 128 + (directions.y * 68);
-                }
+        if (directions.diagonal && shield_button_pressed) {
+            // MY + L, R, LS, and MS + q1/2 = 4750 8750 = 38 70
+            outputs.leftStickX = 128 + (directions.x * 38);
+            outputs.leftStickY = 128 + (directions.y * 70);
+            // MY + L, R, LS, and MS + q3/4 = 5000 8500 = 40 68
+            if (directions.y == -1) {
+                outputs.leftStickX = 128 + (directions.x * 40);
+                outputs.leftStickY = 128 + (directions.y * 68);
             }
         }
 
         // Turnaround neutral B nerf
-        if (inputs.c_down) {
+        if (inputs.b) {
             outputs.leftStickX = 128 + (directions.x * 80);
         }
 
@@ -220,7 +210,7 @@ void MeleeYoshi::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
             }
 
             /* Extended Up B Angles */
-            if (inputs.c_down) {
+            if (inputs.b) {
                 // 67.0362 - 3875 9125 = 31 73
                 outputs.leftStickX = 128 + (directions.x * 31);
                 outputs.leftStickY = 128 + (directions.y * 73);
@@ -262,23 +252,22 @@ void MeleeYoshi::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         outputs.leftStickX = 128 + (directions.x * 80);
     }
 
-    if (inputs.l) {
+    if (inputs.lightshield) {
         outputs.triggerRAnalog = 49;
     }
-    if (inputs.midshield || inputs.leftmidshield) {
+    if (inputs.midshield) {
         outputs.triggerRAnalog = 94;
     }
 
     if (outputs.triggerLDigital) {
         outputs.triggerLAnalog = 140;
     }
-
     if (outputs.triggerRDigital) {
         outputs.triggerRAnalog = 140;
     }
 
     // Shut off C-stick when using D-Pad layer.
-    if ((inputs.mod_x && inputs.mod_y) || inputs.nunchuk_c) {
+    if ((inputs.mod_x && inputs.mod_y) || inputs.l) {
         outputs.rightStickX = 128;
         outputs.rightStickY = 128;
     }

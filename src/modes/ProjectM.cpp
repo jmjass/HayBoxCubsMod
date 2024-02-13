@@ -51,7 +51,7 @@ void ProjectM::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
 
     // Don't override dpad up if it's already pressed using the MX + MY dpad
     // layer.
-    outputs.dpadUp = outputs.dpadUp || inputs.midshield || inputs.leftmidshield;
+    outputs.dpadUp = outputs.dpadUp || inputs.midshield;
 
     if (inputs.select)
         outputs.dpadLeft = true;

@@ -76,7 +76,7 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
         // degree wavedash). Also used as default q3/4 diagonal if crouch walk option select is
         // enabled.
         if (directions.y == -1 && (shield_button_pressed || _options.crouch_walk_os)) {
-            outputs.leftStickX = 128 + (directions.x * 57);
+            outputs.leftStickX = 128 + (directions.x * 56);
             outputs.leftStickY = 128 + (directions.y * 55);
         }
     }
@@ -90,22 +90,10 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
         if (directions.vertical) {
             outputs.leftStickY = 128 + (directions.y * 43);
         }
-        if (directions.diagonal) {
-            // MX + q1/2/3/4 = 7375 3125 = 59 25
-            outputs.leftStickX = 128 + (directions.x * 59);
-            outputs.leftStickY = 128 + (directions.y * 25);
-            if (shield_button_pressed) {
-                // MX + L, R, LS, and MS + q1/2/3/4 = 6375 3750 = 51 30
-                outputs.leftStickX = 128 + (directions.x * 51);
-                outputs.leftStickY = 128 + (directions.y * 30);
-            }
-        }
-
-        // Angled fsmash
-        if (directions.cx != 0) {
-            // 8500 5250 = 68 42
-            outputs.rightStickX = 128 + (directions.cx * 68);
-            outputs.rightStickY = 128 + (directions.y * 42);
+        if (directions.diagonal && shield_button_pressed) {
+            // MX + L, R, LS, and MS + q1/2/3/4 = 6375 3750 = 51 30
+            outputs.leftStickX = 128 + (directions.x * 51);
+            outputs.leftStickY = 128 + (directions.y * 30);
         }
 
         /* Up B angles */
@@ -161,6 +149,13 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
                 }
             }
         }
+
+        // Angled fsmash
+        if (directions.cx != 0) {
+            // 8500 5250 = 68 42
+            outputs.rightStickX = 128 + (directions.cx * 68);
+            outputs.rightStickY = 128 + (directions.y * 42);
+        }
     }
 
     if (inputs.mod_y) {
@@ -172,19 +167,14 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
         if (directions.vertical) {
             outputs.leftStickY = 128 + (directions.y * 59);
         }
-        if (directions.diagonal) {
-            // MY + q1/2/3/4 = 3125 7375 = 25 59
-            outputs.leftStickX = 128 + (directions.x * 25);
-            outputs.leftStickY = 128 + (directions.y * 59);
-            if (shield_button_pressed) {
-                // MY + L, R, LS, and MS + q1/2 = 4750 8750 = 38 70
-                outputs.leftStickX = 128 + (directions.x * 38);
-                outputs.leftStickY = 128 + (directions.y * 70);
-                // MY + L, R, LS, and MS + q3/4 = 5000 8500 = 40 68
-                if (directions.y == -1) {
-                    outputs.leftStickX = 128 + (directions.x * 40);
-                    outputs.leftStickY = 128 + (directions.y * 68);
-                }
+        if (directions.diagonal && shield_button_pressed) {
+            // MY + L, R, LS, and MS + q1/2 = 4750 8750 = 38 70
+            outputs.leftStickX = 128 + (directions.x * 38);
+            outputs.leftStickY = 128 + (directions.y * 70);
+            // MY + L, R, LS, and MS + q3/4 = 5000 8500 = 40 68
+            if (directions.y == -1) {
+                outputs.leftStickX = 128 + (directions.x * 40);
+                outputs.leftStickY = 128 + (directions.y * 68);
             }
         }
 
@@ -265,14 +255,13 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
     if (inputs.lightshield) {
         outputs.triggerRAnalog = 49;
     }
-    if (inputs.midshield || inputs.leftmidshield) {
+    if (inputs.midshield) {
         outputs.triggerRAnalog = 94;
     }
 
     if (outputs.triggerLDigital) {
         outputs.triggerLAnalog = 140;
     }
-
     if (outputs.triggerRDigital) {
         outputs.triggerRAnalog = 140;
     }
