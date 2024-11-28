@@ -1,8 +1,8 @@
 #include "modes/RivalsOfAether.hpp"
 
-#define ANALOG_STICK_MIN 28
+#define ANALOG_STICK_MIN 0
 #define ANALOG_STICK_NEUTRAL 128
-#define ANALOG_STICK_MAX 228
+#define ANALOG_STICK_MAX 255
 
 RivalsOfAether::RivalsOfAether(socd::SocdType socd_type) {
     _socd_pair_count = 4;
@@ -19,7 +19,8 @@ void RivalsOfAether::UpdateDigitalOutputs(InputState &inputs, OutputState &outpu
     outputs.b = inputs.b;
     outputs.x = inputs.x;
     outputs.y = inputs.y;
-    outputs.buttonR = inputs.z;
+    outputs.buttonR = inputs.up;
+    outputs.buttonL = inputs.z;
     if (inputs.nunchuk_connected) {
         // Lightshield with C button.
         if (inputs.nunchuk_c) {

@@ -251,8 +251,8 @@ void Melee20Button::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs
     // angled fsmash).
     if (directions.cx != 0 && directions.cy != 0) {
         // 5250 8500 = 42 68
-        outputs.rightStickX = 128 + (directions.cx * 42);
-        outputs.rightStickY = 128 + (directions.cy * 68);
+        outputs.rightStickX = 128 + (directions.cx * 48);
+        outputs.rightStickY = 128 + (directions.cy * 63);
     }
 
     // Horizontal SOCD overrides X-axis modifiers (for ledgedash maximum jump

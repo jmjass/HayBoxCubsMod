@@ -10,6 +10,8 @@
 #include "modes/Ultimate.hpp"
 #include "modes/MeleeRSwap.hpp"
 #include "modes/SparkMarthMode.hpp"
+#include "modes/FgcMode.hpp"
+#include "HAL/pico/include/input/GamecubeControllerInput.hpp"
 
 extern KeyboardMode *current_kb_mode;
 
@@ -45,7 +47,9 @@ void select_mode(CommunicationBackend *backend) {
         }else if (inputs.x) {
             set_mode(backend, new SparkMarthMode(socd::SOCD_2IP_NO_REAC));
         }else if (inputs.y){
-            set_mode(backend, new FgcMode(socd::SOCD_NEUTRAL));
+            set_mode(backend, new FgcMode(socd::SOCD_NEUTRAL, socd::SOCD_NEUTRAL));
+        }else if (inputs.z){
+            set_mode(backend, new RivalsOfAether(socd::SOCD_NEUTRAL));
         }
     } else if (inputs.mod_y && !inputs.mod_x && inputs.start) {
         if (inputs.l) {
