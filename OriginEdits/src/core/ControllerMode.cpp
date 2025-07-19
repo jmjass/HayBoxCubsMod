@@ -91,8 +91,16 @@ void ControllerMode::UpdateDirections(
 }
 
 bool ResetCall();
+int resetDelay = 0;
 void ControllerMode::ResetController(InputState &inputs, OutputState &outputs){
+    //if user holds x + y + start
     if(outputs.x && outputs.y && outputs.start){
-        ResetCall();
+        //add delay to reset to ensure it doesnt spam the console/doesnt happpen by accident
+        resetDelay++;
+        if(resetDelay == 100){
+            //call for origin reset and reset counter
+            ResetCall();
+            resetDelay = 0;
+        }
     }
 }
