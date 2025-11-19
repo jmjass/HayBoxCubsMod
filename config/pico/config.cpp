@@ -74,7 +74,7 @@ void setup() {
     gpio_input->UpdateInputs(button_holds);
 
     // Bootsel button hold as early as possible for safety.
-    if (button_holds.start || (button_holds.mod_x && button_holds.l)) {
+    if (button_holds.start || (button_holds.mod_x && button_holds.l) || (button_holds.c_down && button_holds.c_left)) {
         reset_usb_boot(0, 0);
     }
 
