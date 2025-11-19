@@ -33,14 +33,23 @@ typedef struct inputstate {
     bool nunchuk_connected = false;
     int8_t nunchuk_x = 0;
     int8_t nunchuk_y = 0;
+    int8_t nunchuk_cstick_x = 0;
+    int8_t nunchuk_cstick_y = 0;
     bool nunchuk_c = false;
     bool nunchuk_z = false;
+    bool nunchuk_r = false;
     bool nunchuk_dleft = false;
     bool nunchuk_dright = false;
     bool nunchuk_ddown = false;
     bool nunchuk_dup = false;
     bool nunchuk_start = false;
+    bool nunchuk_a = false;
+    bool nunchuk_b = false;
+    bool nunchuk_button_x = false;
+    bool nunchuk_button_y = false;
+    bool nunchuk_button_r = false;
     uint8_t l_analog = 0;
+    uint8_t r_analog = 0;
 
     // origin offsets
     uint8_t xOrigin = 0;
